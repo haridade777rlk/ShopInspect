@@ -1,0 +1,24 @@
+# 车间质检台 ShopInspect V1.1
+app_name: 车间质检台
+app_name_en: ShopInspect
+
+camera_index: 0
+camera_backend: dshow
+
+model_path: yolo11n.pt
+confidence: 0.4
+iou: 0.45
+device: cpu
+imgsz: 640
+# long side limit before infer (speed on big frames)
+max_infer_side: 960
+jpeg_quality: 85
+
+db_path: data/shopinspect.db
+outputs_dir: data/outputs
+inputs_dir: data/inputs
+models_dir: models
+
+host: 127.0.0.1
+port: 8787
+return_annotated_default: true

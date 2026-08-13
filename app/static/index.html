@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>车间质检台 · ShopInspect</title>
+<style>
+:root{
+  --bg:#f3f5f9; --panel:#fff; --line:#e6ebf2; --line2:#d7dee8;
+  --text:#1f2937; --muted:#6b7280; --title:#111827;
+  --primary:#0d9488; --primary-soft:#ecfdf5; --blue-soft:#eff6ff;
+  --danger:#ef4444; --ok:#16a34a; --warn:#d97706;
+  --shadow:0 8px 24px rgba(15,23,42,.06); --radius:14px; --sidebar:200px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--text);background:var(--bg);min-height:100vh}
+.app{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 8px 14px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#0d9488,#0ea5e9);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+.logo strong{display:block;font-size:13px;color:var(--title)}
+.logo span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.nav button{width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:10px;color:#4b5563;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:4px}
+.nav button:hover{background:#f8fafc}
+.nav button.active{background:var(--primary-soft);color:#0f766e}
+.main{padding:16px 18px 24px;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.topbar h1{margin:0;font-size:20px;color:var(--title);font-weight:750}
+.topbar .sub{margin-top:4px;color:var(--muted);font-size:12px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:650;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:12px 14px}
+.kpi .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+.kpi .value{font-size:22px;font-weight:760;color:var(--title);line-height:1.1}
+.kpi .foot{margin-top:6px;font-size:11px;color:var(--muted);word-break:break-word}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.95fr);gap:12px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+.card h2{margin:0 0 10px;font-size:14px;color:var(--title);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hint{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.5}
+.mode-bar{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:10px}
+.mode-bar button{border:1px solid transparent;background:transparent;border-radius:9px;padding:9px 10px;font-weight:700;color:#6b7280;cursor:pointer}
+.mode-bar button.active{background:#fff;color:#0f766e;border-color:#99f6e4;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px;font-weight:600}
+input[type=file],input[type=text],input[type=range]{width:100%;border:1px solid var(--line2);background:#fff;color:var(--text);border-radius:10px;padding:9px 11px;margin-bottom:8px;outline:none}
+input[type=text]:focus{border-color:#5eead4;box-shadow:0 0 0 3px rgba(20,184,166,.12)}
+input[type=range]{padding:0;height:26px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button.btn{border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:linear-gradient(180deg,#14b8a6,#0d9488);color:#fff}
+.btn-secondary{background:#eef2f7;color:#334155}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-ok{background:#16a34a;color:#fff}
+.btn-ghost{background:#fff;color:#4b5563;border:1px solid var(--line2)}
+.btn-ghost.active{background:var(--primary-soft);color:#0f766e;border-color:#99f6e4}
+.btn-xs{padding:5px 9px;font-size:12px;border-radius:8px}
+.check{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:2px 0 8px}
+.check input{width:auto;margin:0}
+.stage-wrap{display:grid;grid-template-columns:1fr;gap:8px}
+.stage-wrap.cam-on{grid-template-columns:1fr 1fr}
+.stage{position:relative;border:1px solid var(--line);border-radius:12px;background:#0b1220;overflow:hidden}
+.stage-title{position:absolute;z-index:3;left:8px;top:8px;background:rgba(15,23,42,.72);color:#e5e7eb;font-size:11px;padding:3px 8px;border-radius:999px}
+.stage-frame{position:relative;width:100%;aspect-ratio:16/10;background:#0b1220}
+#camVideo,#preview{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0b1220;display:block}
+#preview{display:none}
+#overlayCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#camBox{display:none;position:absolute;inset:0}
+#camBox.active{display:block}
+.placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#94a3b8;font-size:12px;text-align:center;padding:16px;line-height:1.55}
+.meta{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.5}
+.meta b{color:var(--title)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--blue-soft);color:#1d4ed8;border:1px solid #bfdbfe}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.history-wrap{border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:520px;background:#fcfdff}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{position:sticky;top:0;background:#f8fafc;color:var(--muted);font-weight:700;z-index:1}
+tr:hover td{background:#f8fafc}
+tr.active td{background:#ecfeff}
+tr.selected td{background:#fff7ed}
+.pill{display:inline-block;padding:2px 7px;border-radius:999px;font-size:11px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.thumb{width:44px;height:32px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:#e5e7eb;display:block}
+.thumb.ph{width:44px;height:32px;border-radius:6px;border:1px dashed var(--line2);background:#f8fafc}
+.empty{color:var(--muted);font-size:13px;padding:18px;text-align:center}
+.ops{display:flex;gap:4px;flex-wrap:wrap}
+.sel-count{font-size:12px;color:var(--warn);font-weight:700}
+.toast{position:fixed;right:16px;bottom:16px;z-index:90;background:#111827;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);display:none;max-width:320px;font-size:13px}
+.toast.show{display:block}
+.toast.err{background:#b91c1c}
+.toast.ok{background:#047857}
+.live-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#94a3b8;margin-right:6px}
+.live-dot.on{background:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.15)}
+.hidden{display:none!important}
+.status-pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:700;margin-top:3px}
+.status-pill.alert{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.status-pill.clear{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.modal-mask{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-mask.show{display:flex}
+.modal{width:min(1080px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 24px 60px rgba(15,23,42,.25)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}
+.modal-head h3{margin:0;font-size:15px;color:var(--title)}
+.modal-body{display:grid;grid-template-columns:1.35fr .9fr;gap:12px;padding:12px 14px 16px}
+.modal-image-wrap{background:#0b1220;border-radius:12px;border:1px solid var(--line);min-height:260px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.modal-image-wrap img{width:100%;max-height:68vh;object-fit:contain;display:block}
+.modal-meta{font-size:12px;color:var(--muted);line-height:1.55}
+.modal-kv{display:grid;grid-template-columns:78px 1fr;gap:5px 8px;margin:8px 0 10px;font-size:12px}
+.modal-kv span{color:var(--muted)}
+.modal-kv b{color:var(--title);font-weight:700;word-break:break-word}
+.det-list{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+@media (max-width:1100px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid{grid-template-columns:1fr}
+  .stage-wrap.cam-on{grid-template-columns:1fr}
+  .modal-body{grid-template-columns:1fr}
+}
+.chip.filter{cursor:pointer;border:1px solid #99f6e4;background:#ecfdf5;color:#0f766e;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:650}
+.chip.filter.active{background:#0d9488;color:#fff;border-color:#0d9488}
+.chip.filter-all{background:#fff;border:1px solid #d7dee8;color:#4b5563}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">SI</div>
+      <div><strong>ShopInspect</strong><span>车间质检台</span></div>
+    </div>
+    <nav class="nav">
+      <button type="button" class="active" data-page="detect">检测工作台</button>
+      <button type="button" data-page="history">历史记录</button>
+      <button type="button" data-page="about">说明</button>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">检测工作台</h1>
+        <div class="sub" id="pageSub">ShopInspect v0.1.2 · 详情弹窗 · 扩展字段</div>
+      </div>
+      <div class="row">
+        <span class="badge" id="healthBadge">检查中…</span>
+        <span id="status" style="color:var(--muted);font-size:12px"></span>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="label">记录数</div><div class="value" id="kpiRecords">-</div><div class="foot" id="kpiRecordsFoot">-</div></div>
+      <div class="kpi"><div class="label">检出框</div><div class="value" id="kpiBoxes">-</div><div class="foot">累计检测框</div></div>
+      <div class="kpi"><div class="label">模型状态</div><div class="value" id="kpiModel" style="font-size:16px">-</div><div class="foot" id="kpiDevice">-</div></div>
+      <div class="kpi"><div class="label">类别 Top</div><div class="value" id="kpiSource" style="font-size:13px;line-height:1.35">-</div><div class="foot">by label / source</div></div>
+    </div>
+
+    <div id="pageDetect" class="grid">
+      <section class="card">
+        <h2>检测工作台</h2>
+        <p class="hint">上传图片或开摄像头。实时检测会持续刷新检测框（默认不落库）；归档请用「拍一帧并保存」。</p>
+        <div class="mode-bar">
+          <button type="button" id="modeUpload" class="active">上传图片</button>
+          <button type="button" id="modeCamera">使用摄像头</button>
+        </div>
+
+        <div id="uploadPanel">
+          <label>选择图片</label>
+          <input id="file" type="file" accept="image/*" />
+        </div>
+
+        <div id="camPanel" class="hidden">
+          <p class="hint" style="margin-bottom:8px"><span class="live-dot" id="liveDot"></span><span id="camState">摄像头未开启</span></p>
+          <div class="row" style="margin-bottom:8px">
+            <button type="button" class="btn btn-ok" id="btnCamStart">开启摄像头</button>
+            <button type="button" class="btn btn-danger" id="btnCamStop" disabled>关闭</button>
+            <button type="button" class="btn btn-secondary" id="btnSnap" disabled>拍一帧并保存</button>
+            <button type="button" class="btn btn-secondary" id="btnLive" disabled>实时检测</button>
+          </div>
+          <label class="check"><input type="checkbox" id="liveSave" /> 实时检测时也写入历史（更慢）</label>
+        </div>
+
+        <div class="row" style="align-items:end; gap:10px; margin-bottom:4px">
+          <div style="flex:1; min-width:160px">
+            <label>置信度阈值 <b id="confVal">0.40</b></label>
+            <input id="conf" type="range" min="0.1" max="0.9" step="0.05" value="0.40" />
+          </div>
+          <div style="flex:1; min-width:140px">
+            <label>工单号</label>
+            <input id="workOrder" type="text" placeholder="WO-20260813-01" />
+          </div>
+          <div style="flex:1; min-width:140px">
+            <label>批次号</label>
+            <input id="batchId" type="text" placeholder="BATCH-A" />
+          </div>
+          <div style="flex:1; min-width:160px">
+            <label>备注（可选）</label>
+            <input id="note" type="text" placeholder="例如：工位A 试拍" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:10px">
+          <button type="button" class="btn btn-primary" id="btnDetect">开始检测并保存</button>
+          <button type="button" class="btn btn-secondary" id="btnRefresh">刷新数据</button>
+        </div>
+
+        <div class="stage-wrap" id="stageWrap">
+          <div class="stage" id="camStage">
+            <div class="stage-title">实时画面</div>
+            <div class="stage-frame">
+              <div class="placeholder" id="camPlaceholder">开启摄像头后显示实时画面</div>
+              <div id="camBox">
+                <video id="camVideo" autoplay playsinline muted></video>
+                <canvas id="overlayCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="stage" id="resultStage">
+            <div class="stage-title">标注结果</div>
+            <div class="stage-frame">
+              <div class="placeholder" id="resultPlaceholder">检测后的标注图显示在这里</div>
+              <img id="preview" alt="result" />
+            </div>
+          </div>
+        </div>
+        <canvas id="camCanvas" class="hidden"></canvas>
+        <p class="meta" id="lastResult">等待操作…</p>
+        <div class="chips" id="labelChips"></div>
+      </section>
+
+      <section class="card" id="historyCard">
+        <h2><span>历史记录</span><span class="sel-count" id="selCount"></span></h2>
+        <div class="toolbar">
+          <button type="button" class="btn btn-ghost btn-xs active" data-filter="">全部</button>
+          <button type="button" class="btn btn-ghost btn-xs" data-filter="upload">upload</button>
+          <button type="button" class="btn btn-ghost btn-xs" data-filter="camera">camera</button>
+          <button type="button" class="btn btn-ghost btn-xs" data-filter="file">file</button>
+        </div>
+        <div class="toolbar" style="gap:6px;align-items:center">
+          <input id="filterWorkOrder" type="text" placeholder="筛工单号" style="width:120px;margin:0;padding:6px 8px" />
+          <input id="filterBatchId" type="text" placeholder="筛批次号" style="width:120px;margin:0;padding:6px 8px" />
+          <button type="button" class="btn btn-secondary btn-xs" id="btnApplyFilter">筛选</button>
+          <button type="button" class="btn btn-ghost btn-xs" id="btnClearFilter">清除</button>
+        </div>
+        <div class="toolbar" id="labelFilterBar" style="flex-wrap:wrap"></div>
+        <div class="toolbar">
+          <label class="check" style="margin:0"><input type="checkbox" id="checkAll" /> 全选</label>
+          <button type="button" class="btn btn-danger btn-xs" id="btnBatchDelete" disabled>删除所选</button>
+          <button type="button" class="btn btn-danger btn-xs" id="btnClearAll">清空</button>
+          <button type="button" class="btn btn-secondary btn-xs" id="btnReloadHist">刷新</button>
+          <button type="button" class="btn btn-ghost btn-xs" id="btnExportCsv">导出 CSV</button>
+        </div>
+        <div class="history-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:28px"></th>
+                <th style="width:52px">图</th>
+                <th>ID</th>
+                <th>时间</th>
+                <th>来源</th>
+                <th>工单</th>
+                <th>批次</th>
+                <th>检出</th>
+                <th>主类别</th>
+                <th>耗时</th>
+                <th style="width:108px">操作</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div id="emptyRecords" class="empty hidden">暂无历史记录</div>
+        </div>
+        <div id="detailBox" class="hidden"></div>
+        <button type="button" class="btn btn-danger btn-xs hidden" id="btnDeleteOne">删除这条</button>
+      </section>
+    </div>
+
+    <div id="pageAbout" class="card hidden">
+      <h2>说明</h2>
+      <p class="hint">车间质检台 ShopInspect：本地 YOLO 检测 + FastAPI + SQLite 追溯看板。</p>
+      <p class="hint">API 文档：<a href="/docs" target="_blank">/docs</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="detailModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>检测详情 #<span id="modalId"></span></h3>
+      <div class="row">
+        <button type="button" class="btn btn-danger btn-xs" id="modalDelete">删除</button>
+        <button type="button" class="btn btn-secondary btn-xs" id="modalClose">关闭</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-image-wrap"><img id="modalImg" alt="detail large" /></div>
+      <div>
+        <div class="modal-meta" id="modalSub"></div>
+        <div class="modal-kv" id="modalKv"></div>
+        <div class="chips" id="modalChips"></div>
+        <h2 style="margin:10px 0 6px;font-size:13px">检测框列表</h2>
+        <div class="det-list">
+          <table>
+            <thead><tr><th>#</th><th>类别</th><th>置信度</th><th>BBox</th></tr></thead>
+            <tbody id="modalDetBody"></tbody>
+          </table>
+        </div>
+        <details style="margin-top:10px">
+          <summary style="cursor:pointer;color:#6b7280;font-size:12px">原始 JSON</summary>
+          <pre id="modalJson" style="margin-top:8px;background:#f8fafc;border:1px solid #e6ebf2;border-radius:10px;padding:10px;max-height:150px;overflow:auto;font-size:12px"></pre>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js?v=013"></script>
+</body>
+</html>
